@@ -2,10 +2,9 @@
 //
 //  Module: Author.php - G.J. Watson
 //    Desc: Author Object
-// Version: 1.00
+// Version: 1.01
 //
 
-require_once("ServiceException.php");
 require_once("Quote.php");
 
 final class Author {
@@ -58,37 +57,6 @@ final class Author {
         return $arr;
     }
 
-    public function getRandomQuoteAsArray() {
-        if (sizeof($this->quotes) == 0) {
-            throw new ServiceException(AUTHORNOQUOTES["message"], AUTHORNOQUOTES["code"]);
-        }
-        // find the lowest times used count, and store those quotes
-        $lowest = -1;
-        $arr    = [];
-        foreach ($this->quotes as $quote) {
-            if ($lowest == -1) {
-                $lowest = $quote->getTimesUsed();
-                array_push($arr, $quote);
-            } elseif ($lowest > $quote->getTimesUsed()) {
-                $lowest = $quote->getTimesUsed();
-                $arr    = [];
-                array_push($arr, $quote);
-            } elseif ($lowest == $quote->getTimesUsed()) {
-                array_push($arr, $quote);
-            }
-        }
-        // select a random quote to use
-        $select = rand(0, sizeof($arr) - 1);
-        $item   = $arr[$select]->getQuoteAsArray();
-        // mark the quote as used
-        foreach ($this->quotes as $quote) {
-            if ($item["quote_id"] == $quote->getQuoteID()) {
-                $quote->setUsed();
-            }
-        }
-        return $item;
-    }
-
     public function getAuthorAsArray() {
         $obj["author_id"]     = $this->author_id;
         $obj["author_name"]   = $this->author_name;
@@ -106,13 +74,15 @@ final class Author {
         return $obj;
     }
 
-    public function getAuthorWithRandomQuoteAsArray() {
-        $obj["author_id"]     = $this->author_id;
-        $obj["author_name"]   = $this->author_name;
-        $obj["author_period"] = $this->author_period;
-        $obj["added"]         = $this->added;
-        $obj["quote"]         = $this->getRandomQuoteAsArray();
-        return $obj;
+    public function getAuthorWithSelectedQuoteAsArray($selected) {
+        $obj = $this->getAuthorAsArray();
+        if (sizeof($this->quotes) > $selected) {
+            $obj["quote"]["quote_id"]   = $this->quotes[$selected]->getQuoteID();
+            $obj["quote"]["quote_text"] = $this->quotes[$selected]->getQuoteText();
+            $obj["quote"]["times_used"] = $this->quotes[$selected]->getTimesUsed();
+            $obj["quote"]["added"]      = $this->quotes[$selected]->getTimeAdded();
+        }
+        return $obj;       
     }
 }
 ?>

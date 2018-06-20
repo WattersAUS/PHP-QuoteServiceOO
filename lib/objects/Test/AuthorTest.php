@@ -1,15 +1,15 @@
 <?php
 //
 //  Module: AuthorTest.php - G.J. Watson
-//    Desc: Tests for Quote Class
-// Version: 1.00
+//    Desc: Tests for Author Class
+// Version: 1.01
 //
 
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
 
-set_include_path("../PHP-GeneralAccess/lib");
+set_include_path("../../lib");
 
 require_once("ServiceException.php");
 require_once("Author.php");
@@ -102,46 +102,52 @@ final class AuthorTest extends TestCase {
         $this->assertEquals(0, strcmp($this->testQTime2, $item["added"]));
     }
 
-    public function testAuthorGetRandomQuoteThrowsNoQuotesError() {
-        try {
-            print("\nTEST: testAuthorGetRandomQuoteThrowsNoQuotesError\n");
-            $arr = $this->author->getRandomQuoteAsArray();
-            $this->assertEquals(1, 0);
-        } catch (ServiceException $e) {
-            // Should be caught here
-            print("ServiceException: No quotes error caught successfully!\n");
-            $result = print($e->jsonString());
-            $this->assertEquals(1, $result);
-        } catch (Exception $e) {
-           // And not here
-           $result = print("Caught as normal exception!");
-           $this->assertNotEquals(1, $result);
-        }
-    }
+    // public function testAuthorGetRandomQuoteThrowsNoQuotesError() {
+    //     try {
+    //         print("\nTEST: testAuthorGetRandomQuoteThrowsNoQuotesError\n");
+    //         $arr = $this->author->getRandomQuoteAsArray();
+    //         if (sizeof($arr) == 0) {
+    //             throw new ServiceException(AUTHORNOQUOTES["message"], AUTHORNOQUOTES["code"]);
+    //         }
+    //         $this->assertEquals(1, 0);
+    //     } catch (ServiceException $e) {
+    //         // Should be caught here
+    //         print("ServiceException: No quotes error caught successfully!\n");
+    //         $result = print($e->jsonString());
+    //         $this->assertEquals(1, $result);
+    //     } catch (Exception $e) {
+    //        // And not here
+    //        $result = print("Caught as normal exception!");
+    //        $this->assertNotEquals(1, $result);
+    //     }
+    // }
 
-    public function testAuthorGetRandomQuoteReturnsQuoteAsArray() {
-        try {
-            print("\nTEST: testAuthorGetRandomQuoteReturnsQuote\n");
-            $quote1 = new Quote($this->testQuote1, $this->testText1, $this->testUsed1, $this->testQTime1);
-            $this->author->addQuote($quote1);
-            $arr = $this->author->getRandomQuoteAsArray();
-            print("Random quote returned (converted to JSON) = ".json_encode($arr));
-            $this->assertEquals(1, (sizeof($arr) == 4));
-            $this->assertEquals($this->testQuote1, $arr["quote_id"]);
-            $this->assertEquals(0,                 strcmp($this->testText1, $arr["quote_text"]));
-            $this->assertEquals($this->testUsed1,  $arr["times_used"]);
-            $this->assertEquals(0,                 strcmp($this->testQTime1, $arr["added"]));
-        } catch (ServiceException $e) {
-            // Should be caught here
-            print("ServiceException: No quotes error caught this shouldn't happen here!\n");
-            $result = print($e->jsonString());
-            $this->assertEquals(0, $result);
-        } catch (Exception $e) {
-           // And not here
-           $result = print("Caught as normal exception!");
-           $this->assertNotEquals(1, $result);
-        }
-    }
+    // public function testAuthorGetRandomQuoteReturnsQuoteAsArray() {
+    //     try {
+    //         print("\nTEST: testAuthorGetRandomQuoteReturnsQuote\n");
+    //         $quote1 = new Quote($this->testQuote1, $this->testText1, $this->testUsed1, $this->testQTime1);
+    //         $this->author->addQuote($quote1);
+    //         $arr = $this->author->getRandomQuoteAsArray();
+    //         if (sizeof($arr) == 0) {
+    //             throw new ServiceException(AUTHORNOQUOTES["message"], AUTHORNOQUOTES["code"]);
+    //         }
+    //         print("Random quote returned (converted to JSON) = ".json_encode($arr));
+    //         $this->assertEquals(1, (sizeof($arr) == 4));
+    //         $this->assertEquals($this->testQuote1, $arr["quote_id"]);
+    //         $this->assertEquals(0,                 strcmp($this->testText1, $arr["quote_text"]));
+    //         $this->assertEquals($this->testUsed1,  $arr["times_used"]);
+    //         $this->assertEquals(0,                 strcmp($this->testQTime1, $arr["added"]));
+    //     } catch (ServiceException $e) {
+    //         // Should be caught here
+    //         print("ServiceException: No quotes error caught this shouldn't happen here!\n");
+    //         $result = print($e->jsonString());
+    //         $this->assertEquals(0, $result);
+    //     } catch (Exception $e) {
+    //        // And not here
+    //        $result = print("Caught as normal exception!");
+    //        $this->assertNotEquals(1, $result);
+    //     }
+    // }
 
     public function testAuthorGetAsArray() {
         print("\nTEST: testAuthorGetAsArray\n");
@@ -201,8 +207,8 @@ final class AuthorTest extends TestCase {
         }
     }
 
-    public function testAuthorGetWithRandomQuoteAsArray() {
-        print("\nTEST: testAuthorGetWithRandomQuoteAsArray\n");
+    public function testAuthorGetWithSelectedQuoteAsArray() {
+        print("\nTEST: testAuthorGetWithSelectedQuoteAsArray\n");
         $arr = $this->author->getAuthorAsArray();
         print("Author returned (converted to JSON) = ".json_encode($arr));
         $this->assertEquals(1, (sizeof($arr) == 4));
@@ -212,11 +218,10 @@ final class AuthorTest extends TestCase {
         $this->assertEquals(0, strcmp($this->testTime, $arr["added"]));
 
         try {
-            print("\nTEST: testAuthorGetRandomQuoteReturnsQuote\n");
             $quote1 = new Quote($this->testQuote1, $this->testText1, $this->testUsed1, $this->testQTime1);
             $this->author->addQuote($quote1);
 
-            $arr = $this->author->getAuthorWithRandomQuoteAsArray();
+            $arr = $this->author->getAuthorWithSelectedQuoteAsArray(0);
 
             print("Author and all quotes returned (converted to JSON) = ".json_encode($arr));
             $this->assertEquals(1, (sizeof($arr) == 5));

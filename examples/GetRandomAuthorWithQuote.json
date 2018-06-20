@@ -1,0 +1,16 @@
+{
+	"service": "GetRandomAuthorWithQuote",
+	"author": {
+		"author_id": 381,
+		"author_name": "Mahatma Gandhi",
+		"author_period": "",
+		"added": "2018-01-29 10:50:53",
+		"quote": {
+			"quote_id": 864,
+			"quote_text": "An eye for an eye will make the whole world blind.",
+			"times_used": 0,
+			"added": "2018-01-29 10:59:39"
+		}
+	},
+	"generated": "2018-06-20 21:01:37"
+}

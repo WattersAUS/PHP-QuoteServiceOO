@@ -2,10 +2,10 @@
 //
 //  Module: GetAuthorWithQuotes.php - G.J. Watson
 //    Desc: Get an author and their quotes to the requestor as an array
-// Version: 1.00
+// Version: 1.01
 //
 
-function getAuthorWithQuotes($db, $common, $author_id) {
+function getAuthorWithQuotes($db, $author_id) {
     $arr = [];
     // we're only interested in authors who have quotes
     $sql  = "SELECT au.id AS author_id, au.name AS author_name, au.match_text AS author_match_text, au.period AS author_period, au.added AS author_added_when";
@@ -17,10 +17,14 @@ function getAuthorWithQuotes($db, $common, $author_id) {
     $author = NULL;
     $quotes = $db->select($sql);
     if ($row = $quotes->fetch_array(MYSQLI_ASSOC)) {
-        $common->logINFOMessage("Adding Author (".$row["author_name"].") to results");
         $author = new Author($row["author_id"], $row["author_name"], $row["author_period"], $row["author_added_when"]);
         $author->addQuote(new Quote($row["quote_id"], $row["quote_text"], $row["quote_times_used"], $row["quote_added_when"]));
+        while ($row = $quotes->fetch_array(MYSQLI_ASSOC)) {
+            $author->addQuote(new Quote($row["quote_id"], $row["quote_text"], $row["quote_times_used"], $row["quote_added_when"]));
+        }
         array_push($arr, $author->getAuthorWithAllQuotesAsArray());
+    } else {
+        throw new ServiceException(ACTIVEAUTHORNOTFOUND["message"], ACTIVEAUTHORNOTFOUND["code"]);
     }
     return $arr;
 }

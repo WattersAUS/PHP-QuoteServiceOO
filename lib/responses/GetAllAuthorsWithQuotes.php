@@ -2,10 +2,10 @@
 //
 //  Module: getAllAuthorsWithQuotes.php - G.J. Watson
 //    Desc: Get an author and their quotes to the requestor as a Json response
-// Version: 1.00
+// Version: 1.01
 //
 
-function getAllAuthorsWithQuotes($db, $common) {
+function getAllAuthorsWithQuotes($db) {
     $arr = [];
     // we're only interested in authors who have quotes
     $sql  = "SELECT au.id AS author_id, au.name AS author_name, au.match_text AS author_match_text, au.period AS author_period, au.added AS author_added_when";
@@ -28,9 +28,10 @@ function getAllAuthorsWithQuotes($db, $common) {
         }
         $author->addQuote(new Quote($row["quote_id"], $row["quote_text"], $row["quote_times_used"], $row["quote_added_when"]));
     }
-    if ($old_id != -1) {
-        array_push($arr, $author->getAuthorWithAllQuotesAsArray());
+    if ($old_id == -1) {
+        throw new ServiceException(ACTIVEAUTHORNOTFOUND["message"], ACTIVEAUTHORNOTFOUND["code"]);
     }
+    array_push($arr, $author->getAuthorWithAllQuotesAsArray());
     return $arr;
 }
 ?>

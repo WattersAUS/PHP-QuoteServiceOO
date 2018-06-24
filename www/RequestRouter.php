@@ -2,7 +2,7 @@
 //
 //  Module: RequestRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.00
+// Version: 1.01
 //
 
     // first load up the common project code
@@ -24,36 +24,49 @@
     require_once("responses/GetRandomAuthorWithQuote.php");
 
     //
+    // check array item supplied as expected
+    //
+    function validateURLVariableExists($key, $message, $code, $array) {
+        if (! array_key_exists($key, $array)) {
+            throw new ServiceException($message, $code);
+        }
+        if (empty($array[$key])) {
+            throw new ServiceException($message, $code);
+        }
+        return;
+    }
+
+    function validateNumericURLVariable($key, $message, $code, $array) {
+        validateURLVariableExists($key, $message, $code, $array);
+        if (!is_numeric($array[$key])) {
+            throw new ServiceException($message, $code);
+        }
+        return;
+    }
+
+    //
     // check it's a request we can deal with
-    function routeRequest($db, $access, $common, $request) {
-        switch ($request) {
+    //
+    function routeRequest($db, $access, $generated, $arr) {
+        $version = "v1.00";
+        switch ($arr["request"]) {
             case "authors":
-                $arr["service"] = "GetAllAuthors";
-                $arr["authors"] = getAllAuthors($db, $common);
+                $jsonObj = new JSONBuilder($version, "GetAllAuthors", $generated, "authors", getAllAuthors($db));
                 break;
             case "quotes":
-                $arr["service"] = "GetAllAuthorsWithQuotes";
-                $arr["authors"] = getAllAuthorsWithQuotes($db, $common);
+                $jsonObj = new JSONBuilder($version, "GetAllAuthorsWithQuotes", $generated, "authors", getAllAuthorsWithQuotes($db));
                 break;
             case "author":
-                if (! in_array("author", $_GET)) {
-                    throw new ServiceException(ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"]);
-                }
-                if (empty($_GET["author"]) || !is_numeric($_GET["author"])) {
-                    throw new ServiceException(ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"]);
-                }
-                $arr["service"] = "GetAuthorWithQuotes";
-                $arr["author"]  = getAuthorWithQuotes($db, $common, $_GET["author"]);
+                validateNumericURLVariable("id", ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"], $arr);
+                $jsonObj = new JSONBuilder($version, "GetAuthorWithQuotes", $generated, "author", getAuthorWithQuotes($db, $arr["id"]));
                 break;
-            case "quote":
-                $arr["service"] = "GetRandomAuthorWithQuote";
-                $arr["author"]  = getRandomAuthorWithQuote($db, $common);
+            case "random":
+                $jsonObj = new JSONBuilder($version, "GetRandomAuthorWithQuote", $generated, "author", getRandomAuthorWithQuote($db, $access));
                 break;
             default:
                 throw new ServiceException(HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"]);
         }
-        $arr["generated"] = $common->getGeneratedDateTime();
-        return $arr;
+        return $jsonObj->getJson();
     }
 
     //
@@ -61,28 +74,27 @@
     // 2. route the request
     // 3. log the access
     //
+
     $database = "";
     $username = "";
     $password = "";
     $hostname = "";
     $db       = new Database($database, $username, $password, $hostname);
+    $htmlCode = 200;
+    $htmlMess = "200 OK";
     $response = "";
     try {
         $db->connect();
         // 1 - token check
-        if (! $_GET["token"] || empty($_GET["token"])) {
-            throw new ServiceException(ACCESSTOKENMISSING["message"], ACCESSTOKENMISSING["code"]);
-        }
+        validateURLVariableExists("token", ACCESSTOKENMISSING["message"], ACCESSTOKENMISSING["code"], $_GET);
         $access = new UserAccess($_GET["token"]);
         $access->checkAccessAllowed($db);
         $common = new Common();
         // 2 - routing
         switch ($_SERVER['REQUEST_METHOD']) {
             case "GET":
-                if (!isset($_GET["request"])) {
-                    throw new ServiceException(HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"]);
-                }
-                $response = json_encode(routeRequest($db, $access, $common, $_GET["request"]), JSON_NUMERIC_CHECK);
+                validateURLVariableExists("request", HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"], $_GET);
+                $response = routeRequest($db, $access, $common->getGeneratedDateTime(), $_GET);
                 break;
             case "POST":
             case "PUT":
@@ -96,13 +108,19 @@
         $access->logRequest($db, $_SERVER['REMOTE_ADDR']);
         $db->close();
     } catch (ServiceException $e) {
-        // here we control the rethrown errors...interrogate the internal error to map to a http code and setup up a response
+        // set the html code and message depending on Exception
+        $htmlCode = $e->getHTMLResponseCode();
+        $htmlMess = $e->getHTMLResponseMsg();
         $response = $e->jsonString();
     } catch (Exception $e) {
-        // stuff we haven't caught and recycled 500 error
+        throw new ServiceException(UNKNOWNERROR["message"], UNKNOWNERROR["code"]);
     } finally {
         // send the result of the req back
+        header_remove();
+        http_response_code($htmlCode);
+        header("Cache-Control: no-transform,public,max-age=300,s-maxage=900");
         header("Content-type: application/json;charset=utf-8");
+        header("Status: ".$htmlMess);
         echo $response;
     }
 ?>

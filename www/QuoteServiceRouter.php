@@ -24,30 +24,9 @@
     require_once("responses/GetRandomAuthorWithQuote.php");
 
     //
-    // check array item supplied as expected
-    //
-    function validateURLVariableExists($key, $message, $code, $array) {
-        if (! array_key_exists($key, $array)) {
-            throw new ServiceException($message, $code);
-        }
-        if (empty($array[$key])) {
-            throw new ServiceException($message, $code);
-        }
-        return;
-    }
-
-    function validateNumericURLVariable($key, $message, $code, $array) {
-        validateURLVariableExists($key, $message, $code, $array);
-        if (!is_numeric($array[$key])) {
-            throw new ServiceException($message, $code);
-        }
-        return;
-    }
-
-    //
     // check it's a request we can deal with
     //
-    function routeRequest($db, $access, $generated, $arr) {
+    function routeRequest($common, $db, $access, $generated, $arr) {
         $version = "v1.00";
         switch ($arr["request"]) {
             case "authors":
@@ -57,7 +36,7 @@
                 $jsonObj = new JSONBuilder($version, "GetAllAuthorsWithQuotes", $generated, "authors", getAllAuthorsWithQuotes($db));
                 break;
             case "author":
-                validateNumericURLVariable("id", ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"], $arr);
+                $common->validateNumericURLVariable("id", ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"], $arr);
                 $jsonObj = new JSONBuilder($version, "GetAuthorWithQuotes", $generated, "author", getAuthorWithQuotes($db, $arr["id"]));
                 break;
             case "random":
@@ -84,17 +63,17 @@
     $htmlMess = "200 OK";
     $response = "";
     try {
+        $common = new Common();
         $db->connect();
         // 1 - token check
-        validateURLVariableExists("token", ACCESSTOKENMISSING["message"], ACCESSTOKENMISSING["code"], $_GET);
+        $common->validateURLVariableExists("token", ACCESSTOKENMISSING["message"], ACCESSTOKENMISSING["code"], $_GET);
         $access = new UserAccess($_GET["token"]);
         $access->checkAccessAllowed($db);
-        $common = new Common();
         // 2 - routing
         switch ($_SERVER['REQUEST_METHOD']) {
             case "GET":
-                validateURLVariableExists("request", HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"], $_GET);
-                $response = routeRequest($db, $access, $common->getGeneratedDateTime(), $_GET);
+                $common->validateURLVariableExists("request", HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"], $_GET);
+                $response = routeRequest($common, $db, $access, $common->getGeneratedDateTime(), $_GET);
                 break;
             case "POST":
             case "PUT":

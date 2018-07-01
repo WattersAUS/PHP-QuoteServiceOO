@@ -19,7 +19,6 @@ function getAllAuthorsWithQuotes($db) {
     $quotes = $db->select($sql);
     while ($row = $quotes->fetch_array(MYSQLI_ASSOC)) {
         if ($old_id != $row["author_id"]) {
-            $common->logINFOMessage("Adding Author (".$row["author_name"].") to results");
             if ($old_id != -1) {
                 array_push($arr, $author->getAuthorWithAllQuotesAsArray());
             }

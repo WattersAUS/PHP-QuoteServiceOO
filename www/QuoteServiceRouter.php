@@ -2,7 +2,7 @@
 //
 //  Module: QuoteServiceRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.02
+// Version: 1.03
 //
 
     // first load up the common project code
@@ -27,7 +27,7 @@
     //
     // check it's a request we can deal with
     //
-    function routeRequest($validate, $db, $access, $generated, $arr) {
+    function routeRequest($check, $db, $access, $generated, $arr) {
         $version = "v1.00";
         switch ($arr["request"]) {
             case "authors":
@@ -37,7 +37,7 @@
                 $jsonObj = new JSONBuilder($version, "GetAllAuthorsWithQuotes", $generated, "authors", getAllAuthorsWithQuotes($db));
                 break;
             case "author":
-                $validate->numericVariable("id", ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"], $arr);
+                $check->numericVariable("id", ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"], $arr);
                 $jsonObj = new JSONBuilder($version, "GetAuthorWithQuotes", $generated, "author", getAuthorWithQuotes($db, $arr["id"]));
                 break;
             case "random":
@@ -67,15 +67,15 @@
         $common = new Common();
         $db->connect();
         // 1 - token check
-        $validate = new Validate();
-        $validate->variableExists("token", ACCESSTOKENMISSING["message"], ACCESSTOKENMISSING["code"], $_GET);
+        $check = new Validate();
+        $check->variableCheck("token", MALFORMEDREQUEST["message"], MALFORMEDREQUEST["code"], 36, $_GET);
         $access = new UserAccess($_GET["token"]);
         $access->checkAccessAllowed($db);
         // 2 - routing
         switch ($_SERVER['REQUEST_METHOD']) {
             case "GET":
-                $validate->variableExists("request", HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"], $_GET);
-                $response = routeRequest($validate, $db, $access, $common->getGeneratedDateTime(), $_GET);
+                $check->variableCheck("request", MALFORMEDREQUEST["message"], MALFORMEDREQUEST["code"], 32, $_GET);
+                $response = routeRequest($check, $db, $access, $common->getGeneratedDateTime(), $_GET);
                 break;
             case "POST":
             case "PUT":

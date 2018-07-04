@@ -11,6 +11,7 @@
     require_once("Database.php");
     require_once("JsonBuilder.php");
     require_once("ServiceException.php");
+    require_once("Validate.php");
     require_once("UserAccess.php");
 
     // objects
@@ -26,7 +27,7 @@
     //
     // check it's a request we can deal with
     //
-    function routeRequest($common, $db, $access, $generated, $arr) {
+    function routeRequest($validate, $db, $access, $generated, $arr) {
         $version = "v1.00";
         switch ($arr["request"]) {
             case "authors":
@@ -36,7 +37,7 @@
                 $jsonObj = new JSONBuilder($version, "GetAllAuthorsWithQuotes", $generated, "authors", getAllAuthorsWithQuotes($db));
                 break;
             case "author":
-                $common->validateNumericURLVariable("id", ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"], $arr);
+                $validate->numericVariable("id", ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"], $arr);
                 $jsonObj = new JSONBuilder($version, "GetAuthorWithQuotes", $generated, "author", getAuthorWithQuotes($db, $arr["id"]));
                 break;
             case "random":
@@ -66,14 +67,15 @@
         $common = new Common();
         $db->connect();
         // 1 - token check
-        $common->validateURLVariableExists("token", ACCESSTOKENMISSING["message"], ACCESSTOKENMISSING["code"], $_GET);
+        $validate = new Validate();
+        $validate->variableExists("token", ACCESSTOKENMISSING["message"], ACCESSTOKENMISSING["code"], $_GET);
         $access = new UserAccess($_GET["token"]);
         $access->checkAccessAllowed($db);
         // 2 - routing
         switch ($_SERVER['REQUEST_METHOD']) {
             case "GET":
-                $common->validateURLVariableExists("request", HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"], $_GET);
-                $response = routeRequest($common, $db, $access, $common->getGeneratedDateTime(), $_GET);
+                $validate->variableExists("request", HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"], $_GET);
+                $response = routeRequest($validate, $db, $access, $common->getGeneratedDateTime(), $_GET);
                 break;
             case "POST":
             case "PUT":

@@ -2,7 +2,7 @@
 //
 //  Module: GetAllAuthors.php - G.J. Watson
 //    Desc: Return all authors as an array object
-// Version: 1.01
+// Version: 1.02
 //
 
 function getAllAuthors($db) {

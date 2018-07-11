@@ -2,7 +2,7 @@
 //
 //  Module: QuoteServiceRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.03
+// Version: 1.05
 //
 
     // first load up the common project code
@@ -28,6 +28,7 @@
     // check it's a request we can deal with
     //
     function routeRequest($check, $db, $access, $generated, $arr) {
+        $version = "v1.05";
         switch ($arr["request"]) {
             case "authors":
                 $jsonObj = new JSONBuilder($version, "GetAllAuthors", $generated, "authors", getAllAuthors($db));

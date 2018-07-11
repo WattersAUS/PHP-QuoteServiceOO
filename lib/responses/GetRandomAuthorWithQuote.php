@@ -2,7 +2,7 @@
 //
 //  Module: GetRandomAuthorWithQuote.php - G.J. Watson
 //    Desc: Get a random quote to the requestor as a Json response
-// Version: 1.00
+// Version: 1.02
 //
 
 function updateRandomQuoteTimesUsed($db, $accessId, $quoteId) {

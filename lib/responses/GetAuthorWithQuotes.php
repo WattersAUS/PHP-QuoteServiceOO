@@ -2,7 +2,7 @@
 //
 //  Module: GetAuthorWithQuotes.php - G.J. Watson
 //    Desc: Get an author and their quotes to the requestor as an array
-// Version: 1.01
+// Version: 1.02
 //
 
 function getAuthorWithQuotes($db, $author_id) {

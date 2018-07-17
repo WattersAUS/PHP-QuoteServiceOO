@@ -2,7 +2,7 @@
 //
 //  Module: QuoteServiceRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.05
+// Version: 1.07
 //
 
     // first load up the common project code
@@ -24,11 +24,14 @@
     require_once("responses/GetAllAuthorsWithQuotes.php");
     require_once("responses/GetRandomAuthorWithQuote.php");
 
+    // connection details for database
+    require_once("connect/Quotes.php");
+
     //
     // check it's a request we can deal with
     //
     function routeRequest($check, $db, $access, $generated, $arr) {
-        $version = "v1.05";
+        $version = "v1.07";
         switch ($arr["request"]) {
             case "authors":
                 $jsonObj = new JSONBuilder($version, "GetAllAuthors", $generated, "authors", getAllAuthors($db));
@@ -55,10 +58,6 @@
     // 3. log the access
     //
 
-    $database = "";
-    $username = "";
-    $password = "";
-    $hostname = "";
     $db       = new Database($database, $username, $password, $hostname);
     $htmlCode = 200;
     $htmlMess = "200 OK";
@@ -74,7 +73,7 @@
         // 2 - routing
         switch ($_SERVER['REQUEST_METHOD']) {
             case "GET":
-                $check->variableCheck("request", MALFORMEDREQUEST["message"], MALFORMEDREQUEST["code"], 32, $_GET);
+                $check->variableCheck("request", MALFORMEDREQUEST["message"], MALFORMEDREQUEST["code"], 12, $_GET);
                 $response = routeRequest($check, $db, $access, $common->getGeneratedDateTime(), $_GET);
                 break;
             case "POST":

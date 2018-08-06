@@ -2,7 +2,7 @@
 //
 //  Module: GetRandomAuthorWithQuote.php - G.J. Watson
 //    Desc: Get a random quote to the requestor as a Json response
-// Version: 1.02
+// Version: 1.03
 //
 
 function updateRandomQuoteTimesUsed($db, $accessId, $quoteId) {
@@ -46,6 +46,12 @@ function getRandomAuthorWithQuote($db, $access) {
         $item   = $recs[$select];
         $author = new Author($item["author_id"], $item["author_name"], $item["author_period"], $item["author_added_when"]);
         $author->addQuote(new Quote($item["quote_id"], $item["quote_text"], $item["quote_times_used"], $item["quote_added_when"]));
+        // now add the author aliases        
+        $aliases = $db->select(getAuthorAliasesSQL($author->getAuthorID()));
+        while ($row = $aliases->fetch_array(MYSQLI_ASSOC)) {
+            $alias = new Alias($row["alias_id"], $row["alias_name"], $row["alias_added_when"]);
+            $author->addAlias($alias);
+        }
         $arr = $author->getAuthorWithSelectedQuoteAsArray(0);
         // we've selected the random quote, now update times_used
         updateRandomQuoteTimesUsed($db, $access->getUserID(), $item["quote_id"]);

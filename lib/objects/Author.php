@@ -2,7 +2,7 @@
 //
 //  Module: Author.php - G.J. Watson
 //    Desc: Author Object
-// Version: 1.01
+// Version: 1.03
 //
 
 require_once("Quote.php");
@@ -13,6 +13,7 @@ final class Author {
     private $author_period; // updating handled in DB
     private $added;
 
+    private $aliases;
     private $quotes;
 
     // New quote (we have some data)
@@ -21,7 +22,12 @@ final class Author {
         $this->author_name       = $arg2;
         $this->author_period     = $arg3;
         $this->added             = $arg4;
+        $this->aliases           = [];
         $this->quotes            = [];
+    }
+
+    public function addAlias($alias) {
+        array_push($this->aliases, $alias);
     }
 
     public function addQuote($quote) {
@@ -44,43 +50,57 @@ final class Author {
         return $this->added;
     }
 
+    public function getAliasesAsArray() {
+        $arr = [];
+        foreach ($this->aliases as $alias) {
+            $item          = [];
+            $item["id"]    = $alias->getAliasID();
+            $item["name"]  = $alias->getAliasName();
+            $item["added"] = $alias->getTimeAdded();
+            array_push($arr, $item);
+        }
+        return $arr;
+    }
+
     public function getQuotesAsArray() {
         $arr = [];
         foreach ($this->quotes as $quote) {
-            $item               = [];
-            $item["quote_id"]   = $quote->getQuoteID();
-            $item["quote_text"] = $quote->getQuoteText();
-            $item["times_used"] = $quote->getTimesUsed();
-            $item["added"]      = $quote->getTimeAdded();
+            $item          = [];
+            $item["id"]    = $quote->getQuoteID();
+            $item["text"]  = $quote->getQuoteText();
+            $item["used"]  = $quote->getTimesUsed();
+            $item["added"] = $quote->getTimeAdded();
             array_push($arr, $item);
         }
         return $arr;
     }
 
     public function getAuthorAsArray() {
-        $obj["author_id"]     = $this->author_id;
-        $obj["author_name"]   = $this->author_name;
-        $obj["author_period"] = $this->author_period;
-        $obj["added"]         = $this->added;
+        $obj["id"]      = $this->author_id;
+        $obj["name"]    = $this->author_name;
+        $obj["period"]  = $this->author_period;
+        $obj["added"]   = $this->added;
+        $obj["aliases"] = $this->getAliasesAsArray();
         return $obj;
     }
 
     public function getAuthorWithAllQuotesAsArray() {
-        $obj["author_id"]     = $this->author_id;
-        $obj["author_name"]   = $this->author_name;
-        $obj["author_period"] = $this->author_period;
-        $obj["added"]         = $this->added;
-        $obj["quotes"]        = $this->getQuotesAsArray();
+        $obj["id"]      = $this->author_id;
+        $obj["name"]    = $this->author_name;
+        $obj["period"]  = $this->author_period;
+        $obj["added"]   = $this->added;
+        $obj["aliases"] = $this->getAliasesAsArray();
+        $obj["quotes"]  = $this->getQuotesAsArray();
         return $obj;
     }
 
     public function getAuthorWithSelectedQuoteAsArray($selected) {
         $obj = $this->getAuthorAsArray();
         if (sizeof($this->quotes) > $selected) {
-            $obj["quote"]["quote_id"]   = $this->quotes[$selected]->getQuoteID();
-            $obj["quote"]["quote_text"] = $this->quotes[$selected]->getQuoteText();
-            $obj["quote"]["times_used"] = $this->quotes[$selected]->getTimesUsed();
-            $obj["quote"]["added"]      = $this->quotes[$selected]->getTimeAdded();
+            $obj["quote"]["id"]    = $this->quotes[$selected]->getQuoteID();
+            $obj["quote"]["text"]  = $this->quotes[$selected]->getQuoteText();
+            $obj["quote"]["used"]  = $this->quotes[$selected]->getTimesUsed();
+            $obj["quote"]["added"] = $this->quotes[$selected]->getTimeAdded();
         }
         return $obj;       
     }

@@ -36,14 +36,6 @@ final class Quote {
         return $this->added;
     }
 
-    public function getQuoteAsArray() {
-        $quote["quote_id"]   = $this->quote_id;
-        $quote["quote_text"] = $this->quote_text;
-        $quote["times_used"] = $this->times_used;
-        $quote["added"]      = $this->added;
-        return $quote;
-    }
-
     public function setUsed() {
         $this->used = TRUE;
         return;

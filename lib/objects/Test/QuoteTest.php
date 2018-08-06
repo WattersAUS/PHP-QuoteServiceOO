@@ -40,15 +40,5 @@ final class QuoteTest extends TestCase {
         $this->assertEquals($this->testUsed,  $this->quote->getTimesUsed());
         $this->assertEquals(0,                strcmp($this->testTime, $this->quote->getTimeAdded()));
     }
-
-    public function testQuoteReturnedAsArray() {
-        print("\nFunction: testQuoteReturnedAsArray\n");
-        $arr = $this->quote->getQuoteAsArray();
-        $this->assertEquals(1, (sizeof($arr) == 4));
-        $this->assertEquals($this->testQuote, $arr["quote_id"]);
-        $this->assertEquals(0,                strcmp($this->testText, $arr["quote_text"]));
-        $this->assertEquals($this->testUsed,  $arr["times_used"]);
-        $this->assertEquals(0,                strcmp($this->testTime, $arr["added"]));
-    }
 }
 ?>

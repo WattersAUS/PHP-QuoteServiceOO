@@ -16,7 +16,11 @@
 
     // objects
     require_once("objects/Author.php");
+    require_once("objects/Alias.php");
     require_once("objects/Quote.php");
+
+    // common SQL statements
+    require_once("sql/GetQuotesSQL.php");
 
     // functions to return json
     require_once("responses/GetAllAuthors.php");

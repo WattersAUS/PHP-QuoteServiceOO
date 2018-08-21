@@ -2,7 +2,7 @@
 //
 //  Module: GetQuotesSQL.php - G.J. Watson
 //    Desc: Common SQL Statements used for Quotes DB
-// Version: 1.00
+// Version: 1.03
 //
 
 function getBasicAuthorSQL() {
@@ -13,12 +13,16 @@ function getBasicAuthorSQL() {
 }
 
 function getAuthorsSQL() {
-    // we're only interested in authors who have quotes
     return getBasicAuthorSQL();
 }
 
+function searchAuthorsSQL($searchString) {
+    $sql  = getBasicAuthorSQL();
+    $sql .= " AND au.match_text LIKE CONCAT('%',plaintext('".$searchString."'),'%')";
+    return $sql;
+}
+
 function getAuthorByIdSQL($id) {
-    // we're only interested in authors who have quotes
     $sql  = getBasicAuthorSQL();
     $sql .= " AND au.id = ".$id;
     return $sql;

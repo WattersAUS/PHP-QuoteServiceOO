@@ -2,7 +2,7 @@
 //
 //  Module: QuoteServiceRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.07
+// Version: 1.08
 //
 
     // first load up the common project code
@@ -28,6 +28,10 @@
     require_once("responses/GetAllAuthorsWithQuotes.php");
     require_once("responses/GetRandomAuthorWithQuote.php");
 
+    // search functions
+    require_once("responses/SearchAllAuthors.php");
+    require_once("responses/SearchAllAuthorsWithQuotes.php");
+
     // connection details for database
     require_once("connect/Quotes.php");
 
@@ -35,7 +39,7 @@
     // check it's a request we can deal with
     //
     function routeRequest($check, $db, $access, $generated, $arr) {
-        $version = "v1.07";
+        $version = "v1.08";
         switch ($arr["request"]) {
             case "authors":
                 $jsonObj = new JSONBuilder($version, "GetAllAuthors", $generated, "authors", getAllAuthors($db));
@@ -49,6 +53,12 @@
                 break;
             case "random":
                 $jsonObj = new JSONBuilder($version, "GetRandomAuthorWithQuote", $generated, "author", getRandomAuthorWithQuote($db, $access));
+                break;
+            case "srchauthors":
+                $jsonObj = new JSONBuilder($version, "SearchAllAuthors", $generated, "authors", searchAllAuthors($db, $arr["search"]));
+                break;
+            case "srchquotes":
+                $jsonObj = new JSONBuilder($version, "SearchAllAuthorsWithQuotes", $generated, "authors", searchAllAuthorsWithQuotes($db, $arr["search"]));
                 break;
             default:
                 throw new ServiceException(HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"]);

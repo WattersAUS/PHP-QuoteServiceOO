@@ -2,7 +2,7 @@
 //
 //  Module: QuoteServiceRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.08
+// Version: 1.09
 //
 
     // first load up the common project code
@@ -32,6 +32,9 @@
     require_once("responses/SearchAllAuthors.php");
     require_once("responses/SearchAllAuthorsWithQuotes.php");
 
+    // get 'new' quotes
+    require_once("responses/GetNewAuthorsWithQuotes.php");
+
     // connection details for database
     require_once("connect/Quotes.php");
 
@@ -59,6 +62,10 @@
                 break;
             case "srchquotes":
                 $jsonObj = new JSONBuilder($version, "SearchAllAuthorsWithQuotes", $generated, "authors", searchAllAuthorsWithQuotes($db, $arr["search"]));
+                break;
+            case "newquotes":
+                $check->datetimeVariable("startdate", ILLEGALDATE["message"], ILLEGALDATE["code"], $arr);
+                $jsonObj = new JSONBuilder($version, "GetNewAuthorsWithQuotes", $generated, "authors", getNewAuthorsWithQuotes($db, $arr["startdate"]));
                 break;
             default:
                 throw new ServiceException(HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"]);

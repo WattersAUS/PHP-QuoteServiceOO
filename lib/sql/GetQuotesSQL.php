@@ -2,14 +2,14 @@
 //
 //  Module: GetQuotesSQL.php - G.J. Watson
 //    Desc: Common SQL Statements used for Quotes DB
-// Version: 1.03
+// Version: 1.04
 //
 
 function getBasicAuthorSQL() {
     $sql  = "SELECT au.id AS author_id, au.name AS author_name, au.match_text AS author_match_text, au.period AS author_period, au.added AS author_added_when";
     $sql .= " FROM author au";
     $sql .= " WHERE EXISTS (SELECT 1 FROM quote q WHERE q.author_id = au.id)";
-    return $sql;    
+    return $sql;
 }
 
 function getAuthorsSQL() {
@@ -39,6 +39,27 @@ function getAuthorQuotesSQL($id) {
     $sql  = "SELECT q.id AS quote_id, q.quote_text AS quote_text, q.match_text AS quote_match_text, q.times_used AS quote_times_used, q.last_used_by AS quote_last_used_by, q.added AS quote_added_when";
     $sql .= " FROM quote q";
     $sql .= " WHERE q.author_id = ".$id;
+    return $sql;
+}
+
+// used to retrieve 'new' author / quotes
+
+function getNewAuthorSQL($newTime) {
+    $sql  = "SELECT au.id AS author_id, au.name AS author_name, au.match_text AS author_match_text, au.period AS author_period, au.added AS author_added_when";
+    $sql .= " FROM author au";
+    $sql .= " WHERE EXISTS (SELECT 1 FROM quote q WHERE q.author_id = au.id AND q.added > '".$newTime."')";
+    return $sql;
+}
+
+function getNewAuthorsSQL($newTime) {
+    return getNewAuthorSQL($newTime);
+}
+
+function getNewAuthorQuotesSQL($id, $newTime) {
+    $sql  = "SELECT q.id AS quote_id, q.quote_text AS quote_text, q.match_text AS quote_match_text, q.times_used AS quote_times_used, q.last_used_by AS quote_last_used_by, q.added AS quote_added_when";
+    $sql .= " FROM quote q";
+    $sql .= " WHERE q.author_id = ".$id;
+    $sql .= " AND q.added > '".$newTime."'";
     return $sql;
 }
 ?>

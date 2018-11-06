@@ -42,7 +42,7 @@
     // check it's a request we can deal with
     //
     function routeRequest($check, $db, $access, $generated, $arr) {
-        $version = "v1.08";
+        $version = "v1.09";
         switch ($arr["request"]) {
             case "authors":
                 $jsonObj = new JSONBuilder($version, "GetAllAuthors", $generated, "authors", getAllAuthors($db));

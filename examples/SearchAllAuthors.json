@@ -1,0 +1,41 @@
+{
+    "version": "v1.09",
+    "service": "SearchAllAuthors",
+    "generated": "2019-03-22 09:42:26",
+    "authors": [
+        {
+            "id": 292,
+            "name": "Douglas Adams",
+            "period": "",
+            "added": "2017-11-20 12:24:17",
+            "aliases": [
+                {
+                    "id": 146,
+                    "name": "Douglas Noel Adams",
+                    "added": "2019-03-10 22:16:25"
+                }
+            ]
+        },
+        {
+            "id": 447,
+            "name": "Adam Smith",
+            "period": "",
+            "added": "2018-02-21 09:55:32",
+            "aliases": []
+        },
+        {
+            "id": 541,
+            "name": "Patch Adams",
+            "period": "",
+            "added": "2018-05-31 08:10:21",
+            "aliases": []
+        },
+        {
+            "id": 619,
+            "name": "John Quincy Adams",
+            "period": "",
+            "added": "2019-01-16 19:25:18",
+            "aliases": []
+        }
+    ]
+}

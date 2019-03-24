@@ -2,7 +2,7 @@
 //
 //  Module: QuoteServiceRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.09
+// Version: 1.10
 //
 
     // first load up the common project code
@@ -20,7 +20,10 @@
     require_once("objects/Quote.php");
 
     // common SQL statements
-    require_once("sql/GetQuotesSQL.php");
+    require_once("sql/AuthorsQuotesSQL.php");
+
+    // support functions
+    require_once("support/UpdateRandomQuoteTimesUsed.php");
 
     // functions to return json
     require_once("responses/GetAllAuthors.php");
@@ -42,7 +45,7 @@
     // check it's a request we can deal with
     //
     function routeRequest($check, $db, $access, $generated, $arr) {
-        $version = "v1.09";
+        $version = "v1.10";
         switch ($arr["request"]) {
             case "authors":
                 $jsonObj = new JSONBuilder($version, "GetAllAuthors", $generated, "authors", getAllAuthors($db));

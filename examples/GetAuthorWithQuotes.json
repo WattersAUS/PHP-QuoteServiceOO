@@ -1,0 +1,94 @@
+{
+    "version": "v1.09",
+    "service": "GetAuthorWithQuotes",
+    "generated": "2019-03-22 09:39:03",
+    "author": [
+        {
+            "id": 207,
+            "name": "George S. Patton",
+            "period": "",
+            "added": "2017-10-10 16:23:45",
+            "aliases": [
+                {
+                    "id": 120,
+                    "name": "George Smith Patton Jr.",
+                    "added": "2019-01-13 14:14:04"
+                }
+            ],
+            "quotes": [
+                {
+                    "id": 311,
+                    "text": "Courage is fear holding on a minute longer.",
+                    "used": 1,
+                    "added": "2017-10-10 16:23:45"
+                },
+                {
+                    "id": 3784,
+                    "text": "Don't tell people how to do things, tell them what to do and let them surprise you with their results.",
+                    "used": 0,
+                    "added": "2019-01-13 14:13:54"
+                },
+                {
+                    "id": 3785,
+                    "text": "A good plan violently executed right now is far better than a perfect plan executed next week.",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:10"
+                },
+                {
+                    "id": 3786,
+                    "text": "If everyone is thinking alike, then somebody isn't thinking.",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:15"
+                },
+                {
+                    "id": 3787,
+                    "text": "May God have mercy upon my enemies, because I won't.",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:19"
+                },
+                {
+                    "id": 3788,
+                    "text": "It is foolish and wrong to mourn the men who died. Rather we should thank God that such men lived.",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:23"
+                },
+                {
+                    "id": 3789,
+                    "text": "Accept the challenges, so that you may feel the exhilaration of victory.",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:28"
+                },
+                {
+                    "id": 3790,
+                    "text": "Never tell people how to do things. Tell them what to do and they will surprise you with their ingenuity.",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:33"
+                },
+                {
+                    "id": 3791,
+                    "text": "No poor bastard ever won a war by dying for his country. He won it by making other bastards die for their country.",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:39"
+                },
+                {
+                    "id": 3792,
+                    "text": "The object of war is not to die for your country but to make the other bastard die for his.",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:47"
+                },
+                {
+                    "id": 3793,
+                    "text": "Success is how high you bounce when you hit bottom.",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:52"
+                },
+                {
+                    "id": 3794,
+                    "text": "If a man does his best, what else is there?",
+                    "used": 0,
+                    "added": "2019-01-13 14:14:55"
+                }
+            ]
+        }
+    ]
+}

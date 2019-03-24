@@ -1,16 +1,34 @@
 {
-	"service": "GetRandomAuthorWithQuote",
-	"author": {
-		"author_id": 381,
-		"author_name": "Mahatma Gandhi",
-		"author_period": "",
-		"added": "2018-01-29 10:50:53",
-		"quote": {
-			"quote_id": 864,
-			"quote_text": "An eye for an eye will make the whole world blind.",
-			"times_used": 0,
-			"added": "2018-01-29 10:59:39"
-		}
-	},
-	"generated": "2018-06-20 21:01:37"
+    "version": "v1.09",
+    "service": "GetRandomAuthorWithQuote",
+    "generated": "2019-03-22 09:37:09",
+    "author": {
+        "id": 12,
+        "name": "Alfred Lord Tennyson",
+        "period": "",
+        "added": "2017-08-14 12:27:00",
+        "aliases": [
+            {
+                "id": 19,
+                "name": "Lord Tennyson",
+                "added": "2018-08-22 07:57:02"
+            },
+            {
+                "id": 20,
+                "name": "Alfred Tennyson",
+                "added": "2018-08-22 07:57:03"
+            },
+            {
+                "id": 21,
+                "name": "1st Baron Tennyson",
+                "added": "2018-08-22 07:57:05"
+            }
+        ],
+        "quote": {
+            "id": 25,
+            "text": "Knowledge comes, but wisdom lingers.",
+            "used": 1,
+            "added": "2017-08-14 12:28:12"
+        }
+    }
 }

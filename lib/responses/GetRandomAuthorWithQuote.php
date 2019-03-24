@@ -2,31 +2,21 @@
 //
 //  Module: GetRandomAuthorWithQuote.php - G.J. Watson
 //    Desc: Get a random quote to the requestor as a Json response
-// Version: 1.03
+// Version: 1.05
 //
-
-function updateRandomQuoteTimesUsed($db, $accessId, $quoteId) {
-    try {
-        $sql = "UPDATE quote_access SET times_used = times_used + 1 WHERE access_ident = ".$accessId." AND quote_id = ".$quoteId;
-        $db->update($sql);
-    } catch (mysqli_sql_exception $e) {
-        throw new ServiceException(DBQUERYERROR["message"], DBQUERYERROR["code"]);
-    }
-    return;
-}
 
 function getRandomAuthorWithQuote($db, $access) {
     $arr = "";
     // first get the minimum quote used times
-    $sql  = "SELECT min(qa.times_used) AS min_times_used";
+    $sql  = "SELECT MIN(qa.times_used) AS min_times_used";
     $sql .= " FROM quote q";
     $sql .= " INNER JOIN quote_access qa ON q.id = qa.quote_id";
     $sql .= " WHERE qa.access_ident = ".$access->getUserID();
     $min = $db->select($sql);
     if ($row = $min->fetch_array(MYSQLI_ASSOC)) {
         // now a set of quotes only having being used 'min_times_used' only
-        $sql  = "SELECT au.id AS author_id, au.name AS author_name, au.match_text AS author_match_text, au.period AS author_period, au.added AS author_added_when";
-        $sql .= ", q.id AS quote_id, q.quote_text AS quote_text, q.match_text AS quote_match_text, q.times_used AS quote_times_used, q.last_used_by AS quote_last_used_by, q.added AS quote_added_when";
+        $sql  = "SELECT au.id AS author_id, au.name AS author_name, au.md5_text AS author_md5_text, au.period AS author_period, au.added AS author_added_when";
+        $sql .= ", q.id AS quote_id, q.quote_text AS quote_text, q.md5_text AS quote_md5_text, q.times_used AS quote_times_used, q.last_used_by AS quote_last_used_by, q.added AS quote_added_when";
         $sql .= " FROM author au";
         $sql .= " INNER JOIN quote q ON q.author_id = au.id";
         $sql .= " INNER JOIN quote_access qa ON qa.quote_id = q.id";

@@ -2,7 +2,7 @@
 //
 //  Module: AuthorQuotesSQL.php - G.J. Watson
 //    Desc: Common SQL Statements used for Quotes DB
-// Version: 1.07
+// Version: 1.08
 //
 
 // Authors
@@ -27,7 +27,7 @@ function getAuthorsSQL() {
 
 function searchAuthorsSQL($searchString) {
     $sql  = getBasicAuthorSQL();
-    $sql .= " AND au.md5_text LIKE CONCAT('%',plaintext('".$searchString."'),'%')";
+    $sql .= " AND plaintext(au.name) LIKE CONCAT('%',plaintext('".$searchString."'),'%')";
     return $sql;
 }
 

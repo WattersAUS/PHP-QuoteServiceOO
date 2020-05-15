@@ -2,10 +2,13 @@
 //
 //  Module: SearchAllAuthors.php - G.J. Watson
 //    Desc: Return all authors matching search as an array object
-// Version: 1.00
+// Version: 1.01
 //
 
 function searchAllAuthors($db, $searchString) {
+    if ((strlen($searchString) == 0) || (strlen($searchString) > 32)) {
+        throw new ServiceException(SEARCHNOTINLIMITS["message"], SEARCHNOTINLIMITS["code"]);        
+    }
     $arr = [];
     $authors = $db->select(searchAuthorsSQL($searchString));
     while ($row = $authors->fetch_array(MYSQLI_ASSOC)) {

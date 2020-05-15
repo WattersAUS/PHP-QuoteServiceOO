@@ -1,34 +1,18 @@
 {
-    "version": "v1.09",
+    "version": "v1.13",
     "service": "GetRandomAuthorWithQuote",
-    "generated": "2019-03-22 09:37:09",
+    "generated": "2019-12-27 13:33:42",
     "author": {
-        "id": 12,
-        "name": "Alfred Lord Tennyson",
+        "id": 7,
+        "name": "Michael Jordan",
         "period": "",
-        "added": "2017-08-14 12:27:00",
-        "aliases": [
-            {
-                "id": 19,
-                "name": "Lord Tennyson",
-                "added": "2018-08-22 07:57:02"
-            },
-            {
-                "id": 20,
-                "name": "Alfred Tennyson",
-                "added": "2018-08-22 07:57:03"
-            },
-            {
-                "id": 21,
-                "name": "1st Baron Tennyson",
-                "added": "2018-08-22 07:57:05"
-            }
-        ],
+        "added": "2017-08-10 14:32:59",
+        "aliases": [],
         "quote": {
-            "id": 25,
-            "text": "Knowledge comes, but wisdom lingers.",
+            "id": 20,
+            "text": "Talent wins games, but teamwork and intelligence wins championships.",
             "used": 1,
-            "added": "2017-08-14 12:28:12"
+            "added": "2017-08-10 14:35:33"
         }
     }
 }

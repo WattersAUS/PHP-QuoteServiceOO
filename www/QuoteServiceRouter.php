@@ -2,7 +2,7 @@
 //
 //  Module: QuoteServiceRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.10
+// Version: 1.13
 //
 
     // first load up the common project code
@@ -42,10 +42,31 @@
     require_once("connect/Quotes.php");
 
     //
-    // check it's a request we can deal with
+    // we need the user access token if it's valid.
+    //
+    function getAuthorisationTokenFromHeaders($check) {
+        $authArray = getallheaders();
+        if (! $check->checkVariableExistsInArray("Authorization", $authArray)) {
+            throw new ServiceException(ACCESSTOKENMISSING["message"], ACCESSTOKENMISSING["code"]);
+        }
+        if (strlen($authArray["Authorization"]) <> 43) {
+            throw new ServiceException(INCORRECTTOKENSUPPLIED["message"], INCORRECTTOKENSUPPLIED["code"]);
+        }
+        list($authType, $token) = explode(" ", $authArray["Authorization"], 2);
+        if (strcasecmp($authType, "Bearer") <> 0) {
+            throw new ServiceException(AUTHORISATIONFAILURE["message"], AUTHORISATIONFAILURE["code"]);
+        }
+        if (! $check->isValidGUID($token)) {
+            throw new ServiceException(INCORRECTTOKENSUPPLIED["message"], INCORRECTTOKENSUPPLIED["code"]);
+        }
+        return $token;
+    }
+
+    //
+    // check it's a request we can deal with and then process appropriately
     //
     function routeRequest($check, $db, $access, $generated, $arr) {
-        $version = "v1.10";
+        $version = "v1.13";
         switch ($arr["request"]) {
             case "authors":
                 $jsonObj = new JSONBuilder($version, "GetAllAuthors", $generated, "authors", getAllAuthors($db));
@@ -54,20 +75,27 @@
                 $jsonObj = new JSONBuilder($version, "GetAllAuthorsWithQuotes", $generated, "authors", getAllAuthorsWithQuotes($db));
                 break;
             case "author":
-                $check->numericVariable("id", ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"], $arr);
+                if (! $check->checkVariableExistsInArray("id", $arr) || ! $check->isValidNumeric($arr["id"])) {
+                    throw new ServiceException(ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"]);
+                }
                 $jsonObj = new JSONBuilder($version, "GetAuthorWithQuotes", $generated, "author", getAuthorWithQuotes($db, $arr["id"]));
                 break;
             case "random":
                 $jsonObj = new JSONBuilder($version, "GetRandomAuthorWithQuote", $generated, "author", getRandomAuthorWithQuote($db, $access));
                 break;
             case "srchauthors":
+                if (! $check->checkVariableExistsInArray("search", $arr)) {
+                    throw new ServiceException(NOSEARCHVARSFOUND["message"], NOSEARCHVARSFOUND["code"]);
+                }
                 $jsonObj = new JSONBuilder($version, "SearchAllAuthors", $generated, "authors", searchAllAuthors($db, $arr["search"]));
                 break;
             case "srchquotes":
                 $jsonObj = new JSONBuilder($version, "SearchAllAuthorsWithQuotes", $generated, "authors", searchAllAuthorsWithQuotes($db, $arr["search"]));
                 break;
             case "newquotes":
-                $check->datetimeVariable("startdate", ILLEGALDATE["message"], ILLEGALDATE["code"], $arr);
+                if (! $check->isValidDateTime($arr["startdate"])) {
+                    throw new ServiceException(ILLEGALDATE["message"], ILLEGALDATE["code"]);
+                }
                 $jsonObj = new JSONBuilder($version, "GetNewAuthorsWithQuotes", $generated, "authors", getNewAuthorsWithQuotes($db, $arr["startdate"]));
                 break;
             default:
@@ -77,27 +105,31 @@
     }
 
     //
-    // 1. do we have a valid token, and check it hasn't been abused
+    // 1. do we have a valid token
     // 2. route the request
     // 3. log the access
     //
 
-    $db       = new Database($database, $username, $password, $hostname);
+    $db = new Database($database, $username, $password, $hostname);
     $htmlCode = 200;
     $htmlMess = "200 OK";
     $response = "";
     try {
         $common = new Common();
         $db->connect();
-        // 1 - token check
+        //
+        // 1 - token authorisation exists in https headers and is the right length/format, hasn't been abused etc
+        //
         $check = new Validate();
-        $check->variableCheck("token", MALFORMEDREQUEST["message"], MALFORMEDREQUEST["code"], 36, $_GET);
-        $access = new UserAccess($_GET["token"]);
+        $token = getAuthorisationTokenFromHeaders($check);
+        $access = new UserAccess($token);
         $access->checkAccessAllowed($db);
         // 2 - routing
-        switch ($_SERVER['REQUEST_METHOD']) {
+        switch ($_SERVER["REQUEST_METHOD"]) {
             case "GET":
-                $check->variableCheck("request", MALFORMEDREQUEST["message"], MALFORMEDREQUEST["code"], 12, $_GET);
+                if (! $check->checkVariableExistsInArray("request", $_GET)) {
+                    throw new ServiceException(MALFORMEDREQUEST["message"], MALFORMEDREQUEST["code"]);
+                }
                 $response = routeRequest($check, $db, $access, $common->getGeneratedDateTime(), $_GET);
                 break;
             case "POST":

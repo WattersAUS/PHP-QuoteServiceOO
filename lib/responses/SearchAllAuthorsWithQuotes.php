@@ -2,12 +2,19 @@
 //
 //  Module: SearchAllAuthorsWithQuotes.php - G.J. Watson
 //    Desc: Get an author and their quotes to the requestor as a Json response
-// Version: 1.00
+// Version: 1.01
 //
 
-function SearchAllAuthorsWithQuotes($db, $searchString) {
+function searchAllAuthorsWithQuotes($db, $searchString) {
+    $searchFor = trim($searchString);
+    if (strlen($searchFor) == 0) || (strlen($searchFor) > 32) {
+        throw new ServiceException(SEARCHNOTINLIMITS["message"], SEARCHNOTINLIMITS["code"]);
+    }
+
+
+
     $arr = [];
-    $authors = $db->select(searchAuthorsSQL($searchString));
+    $authors = $db->select(searchAuthorsSQL($searchFor));
     while ($row = $authors->fetch_array(MYSQLI_ASSOC)) {
         $author = new Author($row["author_id"], $row["author_name"], $row["author_period"], $row["author_added_when"]);
         $aliases = $db->select(getAuthorAliasesSQL($author->getAuthorID()));

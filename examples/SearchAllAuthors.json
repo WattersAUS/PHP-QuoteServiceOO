@@ -1,7 +1,7 @@
 {
-    "version": "v1.09",
+    "version": "v1.14",
     "service": "SearchAllAuthors",
-    "generated": "2019-03-22 09:42:26",
+    "generated": "2021-07-21 20:37:50",
     "authors": [
         {
             "id": 292,
@@ -27,7 +27,7 @@
             "id": 541,
             "name": "Patch Adams",
             "period": "",
-            "added": "2018-05-31 08:10:21",
+            "added": "2018-05-31 07:10:21",
             "aliases": []
         },
         {

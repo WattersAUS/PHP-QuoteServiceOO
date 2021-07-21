@@ -3,14 +3,21 @@
 //  Module: GetRandomAuthorWithQuoteLengthRestricted.php - G.J. Watson
 //    Desc: Get a random quote to the requestor as a Json response
 //          where the combined text length (author / quote) is XX
-// Version: 1.01
+// Version: 1.03
 //
+
+function getCommonRandomQuotesSQL($accessId, $maxLength) {
+    $sql = " FROM author au";
+    $sql .= " INNER JOIN quote q ON q.author_id = au.id";
+    $sql .= " INNER JOIN quote_access qa ON qa.quote_id = q.id";
+    $sql .= " WHERE qa.access_ident = ".$accessId;
+    $sql .= " AND (length(q.quote_text) + length(au.name)) <= ".$maxLength;
+    return $sql;
+}
 
 function getMinimumTimesUsedForQuotesForUser($db, $accessId, $maxLength) {
     $sql  = "SELECT min(qa.times_used) AS min_times_used";
-    $sql .= " FROM quote q";
-    $sql .= " INNER JOIN quote_access qa ON q.id = qa.quote_id";
-    $sql .= " WHERE qa.access_ident = ".$accessId;
+    $sql .= getCommonRandomQuotesSQL($accessId, $maxLength);
     $min = $db->select($sql);
     if ($row = $min->fetch_array(MYSQLI_ASSOC)) {
         return $row["min_times_used"];
@@ -21,11 +28,9 @@ function getMinimumTimesUsedForQuotesForUser($db, $accessId, $maxLength) {
 function getQuotesMatchingMinumumTimesUsed($db, $accessId, $timesUsed, $maxLength) {
     $sql  = "SELECT au.id AS author_id, au.name AS author_name, au.md5_text AS author_md5_text, au.period AS author_period, au.added AS author_added_when";
     $sql .= ", q.id AS quote_id, q.quote_text AS quote_text, q.md5_text AS quote_md5_text, q.times_used AS quote_times_used, q.last_used_by AS quote_last_used_by, q.added AS quote_added_when";
-    $sql .= " FROM author au";
-    $sql .= " INNER JOIN quote q ON q.author_id = au.id";
-    $sql .= " INNER JOIN quote_access qa ON qa.quote_id = q.id";
-    $sql .= " WHERE qa.times_used = ".$timesUsed;
-    $sql .= " AND qa.access_ident = ".$accessId;
+    $sql .= getCommonRandomQuotesSQL($accessId, $maxLength);
+    $sql .= " AND qa.times_used = ".$timesUsed;
+    $sql .= " ORDER BY q.md5_text ASC";
     $sql .= " LIMIT 50";
     $records = [];
     $quotes = $db->select($sql);
@@ -38,9 +43,9 @@ function getQuotesMatchingMinumumTimesUsed($db, $accessId, $timesUsed, $maxLengt
     return $records;
 }
 
-function getRandomAuthorWithQuote($db, $access) {
-    $timesUsed = getMinimumTimesUsedForQuotesForUser($db, $access->getUserID());
-    $quotes = getQuotesMatchingMinumumTimesUsed($db, $access->getUserID(), $timesUsed);
+function getRandomAuthorWithQuoteLengthRestricted($db, $access, $maxLength) {
+    $timesUsed = getMinimumTimesUsedForQuotesForUser($db, $access->getUserID(), $maxLength);
+    $quotes = getQuotesMatchingMinumumTimesUsed($db, $access->getUserID(), $timesUsed, $maxLength);
     // select a random quote and build up the author obj
     $random = rand(0, sizeof($quotes) - 1);
     $quote = $quotes[$random];

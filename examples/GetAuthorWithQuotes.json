@@ -1,32 +1,62 @@
 {
-    "version": "v1.13",
+    "version": "v1.14",
     "service": "GetAuthorWithQuotes",
-    "generated": "2019-12-27 13:30:36",
+    "generated": "2021-07-21 20:39:09",
     "author": [
         {
-            "id": 456,
-            "name": "Helmut Schmidt",
+            "id": 23,
+            "name": "Dylan Thomas",
             "period": "",
-            "added": "2018-02-28 13:13:52",
-            "aliases": [],
+            "added": "2017-09-13 13:43:34",
+            "aliases": [
+                {
+                    "id": 188,
+                    "name": "Dylan Marlais Thomas",
+                    "added": "2019-07-07 12:35:07"
+                }
+            ],
             "quotes": [
                 {
-                    "id": 1404,
-                    "text": "The biggest room in the world is the room for improvement.",
-                    "used": 0,
-                    "added": "2018-02-28 13:13:52"
+                    "id": 90,
+                    "text": "When one burns one's bridges, what a very nice fire it makes.",
+                    "used": 1,
+                    "added": "2017-09-13 13:59:43"
                 },
                 {
-                    "id": 1413,
-                    "text": "Today, the most important is to learn to understand other people. And not only their music, but also their philosophy, their attitude, their behavior. Only then will nations can get along with each other.",
+                    "id": 2480,
+                    "text": "Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light.",
                     "used": 0,
-                    "added": "2018-02-28 13:14:12"
+                    "added": "2018-07-08 10:01:42"
                 },
                 {
-                    "id": 1414,
-                    "text": "In the basic questions, one have to be naive. And I think that the problems of the world and of humanity cannot be solved without idealism. However, I also believe that one should be realistic and pragmatic at the same time.",
+                    "id": 2481,
+                    "text": "Though lovers be lost love shall not.",
                     "used": 0,
-                    "added": "2018-02-28 13:14:17"
+                    "added": "2018-07-08 10:01:47"
+                },
+                {
+                    "id": 2482,
+                    "text": "After the first death, there is no other.",
+                    "used": 0,
+                    "added": "2018-07-08 10:01:48"
+                },
+                {
+                    "id": 2483,
+                    "text": "He who seeks rest finds boredom. He who seeks work finds rest.",
+                    "used": 0,
+                    "added": "2018-07-08 10:01:49"
+                },
+                {
+                    "id": 4311,
+                    "text": "An alcoholic is someone you don't like who drinks as much as you do.",
+                    "used": 0,
+                    "added": "2019-07-07 12:35:10"
+                },
+                {
+                    "id": 4967,
+                    "text": "Somebody's boring me. I think it's me.",
+                    "used": 0,
+                    "added": "2021-07-10 14:59:50"
                 }
             ]
         }

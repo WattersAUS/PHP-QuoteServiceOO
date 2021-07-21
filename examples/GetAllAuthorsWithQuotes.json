@@ -1,5 +1,5 @@
 {
-    "version": "v1.13",
+    "version": "v1.14",
     "service": "GetAllAuthorsWithQuotes",
     "generated": "2019-12-27 13:32:01",
     "authors": [

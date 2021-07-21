@@ -1,18 +1,18 @@
 {
-    "version": "v1.13",
+    "version": "v1.14",
     "service": "GetRandomAuthorWithQuote",
-    "generated": "2019-12-27 13:33:42",
+    "generated": "2021-07-21 20:38:24",
     "author": {
-        "id": 7,
-        "name": "Michael Jordan",
+        "id": 499,
+        "name": "Ingrid Bergman",
         "period": "",
-        "added": "2017-08-10 14:32:59",
+        "added": "2018-04-23 11:58:20",
         "aliases": [],
         "quote": {
-            "id": 20,
-            "text": "Talent wins games, but teamwork and intelligence wins championships.",
-            "used": 1,
-            "added": "2017-08-10 14:35:33"
+            "id": 1901,
+            "text": "A kiss is a lovely trick designed by nature to stop speech when words become superfluous.",
+            "used": 0,
+            "added": "2018-04-23 11:58:22"
         }
     }
 }

@@ -2,7 +2,7 @@
 //
 //  Module: QuoteServiceRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.13
+// Version: 1.14
 //
 
     // first load up the common project code
@@ -30,7 +30,8 @@
     require_once("responses/GetAuthorWithQuotes.php");
     require_once("responses/GetAllAuthorsWithQuotes.php");
     require_once("responses/GetRandomAuthorWithQuote.php");
-
+    require_once("responses/GetRandomAuthorWithQuoteLengthRestricted.php");
+    
     // search functions
     require_once("responses/SearchAllAuthors.php");
     require_once("responses/SearchAllAuthorsWithQuotes.php");
@@ -66,7 +67,7 @@
     // check it's a request we can deal with and then process appropriately
     //
     function routeRequest($check, $db, $access, $generated, $arr) {
-        $version = "v1.13";
+        $version = "v1.14";
         switch ($arr["request"]) {
             case "authors":
                 $jsonObj = new JSONBuilder($version, "GetAllAuthors", $generated, "authors", getAllAuthors($db));
@@ -83,9 +84,15 @@
             case "random":
                 $jsonObj = new JSONBuilder($version, "GetRandomAuthorWithQuote", $generated, "author", getRandomAuthorWithQuote($db, $access));
                 break;
+            case "restrict":
+                if (! $check->checkVariableExistsInArray("maxlen", $arr)) {
+                    throw new ServiceException(SEARCHVARNOTFOUND["message"], SEARCHVARNOTFOUND["code"]);
+                }
+                $jsonObj = new JSONBuilder($version, "GetRandomRestrictedLengthQuote", $generated, "author", getRandomAuthorWithQuoteLengthRestricted($db, $access, $arr["maxlen"]));
+                break;
             case "srchauthors":
                 if (! $check->checkVariableExistsInArray("search", $arr)) {
-                    throw new ServiceException(NOSEARCHVARSFOUND["message"], NOSEARCHVARSFOUND["code"]);
+                    throw new ServiceException(SEARCHVARNOTFOUND["message"], SEARCHVARNOTFOUND["code"]);
                 }
                 $jsonObj = new JSONBuilder($version, "SearchAllAuthors", $generated, "authors", searchAllAuthors($db, $arr["search"]));
                 break;

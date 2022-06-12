@@ -2,11 +2,11 @@
 //
 //  Module: QuoteServiceRouter.php - G.J. Watson
 //    Desc: Route to appropriate response
-// Version: 1.14
+// Version: 1.16
 //
 
     // first load up the common project code
-    set_include_path("../lib");
+    set_include_path("<LIB PATH GOES HERE>");
     require_once("Common.php");
     require_once("Database.php");
     require_once("JsonBuilder.php");
@@ -27,7 +27,7 @@
 
     // functions to return json
     require_once("responses/GetAllAuthors.php");
-    require_once("responses/GetAuthorWithQuotes.php");
+    require_once("responses/GetAuthorByIdWithQuotes.php");
     require_once("responses/GetAllAuthorsWithQuotes.php");
     require_once("responses/GetRandomAuthorWithQuote.php");
     require_once("responses/GetRandomAuthorWithQuoteLengthRestricted.php");
@@ -37,7 +37,7 @@
     require_once("responses/SearchAllAuthorsWithQuotes.php");
 
     // get 'new' quotes
-    require_once("responses/GetNewAuthorsWithQuotes.php");
+    require_once("responses/GetAuthorsWithQuotesFromDate.php");
 
     // connection details for database
     require_once("connect/Quotes.php");
@@ -67,7 +67,7 @@
     // check it's a request we can deal with and then process appropriately
     //
     function routeRequest($check, $db, $access, $generated, $arr) {
-        $version = "v1.14";
+        $version = "v1.16";
         switch ($arr["request"]) {
             case "authors":
                 $jsonObj = new JSONBuilder($version, "GetAllAuthors", $generated, "authors", getAllAuthors($db));
@@ -75,11 +75,11 @@
             case "quotes":
                 $jsonObj = new JSONBuilder($version, "GetAllAuthorsWithQuotes", $generated, "authors", getAllAuthorsWithQuotes($db));
                 break;
-            case "author":
+            case "authorbyid":
                 if (! $check->checkVariableExistsInArray("id", $arr) || ! $check->isValidNumeric($arr["id"])) {
-                    throw new ServiceException(ILLEGALAUTHORID["message"], ILLEGALAUTHORID["code"]);
+                    throw new ServiceException(UNKNOWNAUTHOR["message"], UNKNOWNAUTHOR["code"]);
                 }
-                $jsonObj = new JSONBuilder($version, "GetAuthorWithQuotes", $generated, "author", getAuthorWithQuotes($db, $arr["id"]));
+                $jsonObj = new JSONBuilder($version, "GetAuthorByIdWithQuotes", $generated, "author", getAuthorByIdWithQuotes($db, $arr["id"]));
                 break;
             case "random":
                 $jsonObj = new JSONBuilder($version, "GetRandomAuthorWithQuote", $generated, "author", getRandomAuthorWithQuote($db, $access));
@@ -99,11 +99,11 @@
             case "srchquotes":
                 $jsonObj = new JSONBuilder($version, "SearchAllAuthorsWithQuotes", $generated, "authors", searchAllAuthorsWithQuotes($db, $arr["search"]));
                 break;
-            case "newquotes":
+            case "quotesfrom":
                 if (! $check->isValidDateTime($arr["startdate"])) {
                     throw new ServiceException(ILLEGALDATE["message"], ILLEGALDATE["code"]);
                 }
-                $jsonObj = new JSONBuilder($version, "GetNewAuthorsWithQuotes", $generated, "authors", getNewAuthorsWithQuotes($db, $arr["startdate"]));
+                $jsonObj = new JSONBuilder($version, "GetNewAuthorsWithQuotes", $generated, "authors", getAuthorsWithQuotesFromDate($db, $arr["startdate"]));
                 break;
             default:
                 throw new ServiceException(HTTPROUTINGERROR["message"], HTTPROUTINGERROR["code"]);

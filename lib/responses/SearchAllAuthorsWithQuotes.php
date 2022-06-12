@@ -10,9 +10,6 @@ function searchAllAuthorsWithQuotes($db, $searchString) {
     if (strlen($searchFor) == 0) || (strlen($searchFor) > 32) {
         throw new ServiceException(SEARCHNOTINLIMITS["message"], SEARCHNOTINLIMITS["code"]);
     }
-
-
-
     $arr = [];
     $authors = $db->select(searchAuthorsSQL($searchFor));
     while ($row = $authors->fetch_array(MYSQLI_ASSOC)) {

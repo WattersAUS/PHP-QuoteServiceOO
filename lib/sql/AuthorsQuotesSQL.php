@@ -2,7 +2,7 @@
 //
 //  Module: AuthorQuotesSQL.php - G.J. Watson
 //    Desc: Common SQL Statements used for Quotes DB
-// Version: 1.08
+// Version: 1.09
 //
 
 // Authors
@@ -37,7 +37,7 @@ function getAuthorByIdSQL($id) {
     return $sql;
 }
 
-function getNewAuthorSQL($newTime) {
+function getAuthorFromDateSQL($newTime) {
     $sql  = "SELECT ";
     $sql .= getBasicAuthorFields();
     $sql .= " FROM author au";
@@ -45,8 +45,8 @@ function getNewAuthorSQL($newTime) {
     return $sql;
 }
 
-function getNewAuthorsSQL($newTime) {
-    return getNewAuthorSQL($newTime);
+function getAuthorsFromDateSQL($newTime) {
+    return getAuthorFromDateSQL($newTime);
 }
 
 // AuthorAliases
@@ -79,7 +79,7 @@ function getAuthorQuotesSQL($id) {
     $sql .= " WHERE q.author_id = ".$id;
     return $sql;
 }
-function getNewAuthorQuotesSQL($id, $newTime) {
+function getAuthorQuotesFromDate($id, $newTime) {
     $sql  = "SELECT ";
     $sql .= getBasicQuotesFields();
     $sql .= " FROM quote q";
@@ -88,10 +88,27 @@ function getNewAuthorQuotesSQL($id, $newTime) {
     return $sql;
 }
 
-// Bespoke
+// Author - Quotes Joined
 
-function getAuthorQuotesLessThanCombinedLengthSQL($length) {
-    $sql  = "SELECT";
+function getBasicAuthorQuotesJoinedSQL() {
+    $sql  = getBasicAuthorFields() + ", "; 
+    $sql .= getBasicQuotesFields();
+    $sql .= " FROM author au INNER JOIN quote q ON au.id = q.author_id";
+    return $sql;
+}
+
+function getAuthorsQuotesJoinedSQL() {
+    $sql  = "SELECT ";
+    $sql .= getBasicAuthorQuotesJoinedSQL();
+    $sql .= " ORDER BY au.id";
+    return $sql;
+}
+
+function getAuthorQuotesJoinedFromDateSQL($newTime) {
+    $sql  = "SELECT ";
+    $sql .= getBasicAuthorQuotesJoinedSQL();
+    $sql .= " WHERE q.added > '".$newTime."'";
+    $sql .= " ORDER BY au.id";
     return $sql;
 }
 ?>

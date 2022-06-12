@@ -2,7 +2,7 @@
 //
 //  Module: GetRandomAuthorWithQuote.php - G.J. Watson
 //    Desc: Get a random quote to the requestor as a Json response
-// Version: 1.06
+// Version: 1.07
 //
 
 function getRandomAuthorWithQuote($db, $access) {
@@ -23,7 +23,7 @@ function getRandomAuthorWithQuote($db, $access) {
         $sql .= " WHERE qa.times_used = ".$row["min_times_used"];
         $sql .= " AND qa.access_ident = ".$access->getUserID();
         $sql .= " ORDER BY q.md5_text ASC";
-        $sql .= " LIMIT 50";
+        $sql .= " LIMIT 5000";
         $recs = [];
         $quotes = $db->select($sql);
         while ($row = $quotes->fetch_array(MYSQLI_ASSOC)) {
